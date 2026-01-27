@@ -114,4 +114,4 @@ eventSchema.methods.updateStatus = function () {
   }
 };
 
-module.exports = mongoose.model('Event', eventSchema);
+module.exports =  mongoose.models.Event || mongoose.model('Event', eventSchema);
