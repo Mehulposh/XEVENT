@@ -61,14 +61,14 @@ const eventSchema = new mongoose.Schema(
     },
     organizer: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'user',
       required: true,
     },
     participants: [
       {
         user: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'User',
+          ref: 'user',
         },
         registeredAt: {
           type: Date,
