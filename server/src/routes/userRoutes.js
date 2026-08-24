@@ -5,6 +5,7 @@ const {
   getUsers,
   getUser,
   updateProfile,
+  requestOrganizerRole,
   updateUserRole,
   deleteUser,
   getUserStats,
@@ -32,6 +33,7 @@ router.get('/activity', protect, getUserActivity);
 router.get('/:id', protect, getUser);
 
 router.put('/profile', protect, profileValidation, validate, updateProfile);
+router.put('/request-organizer', protect, requestOrganizerRole);
 router.put(
   '/:id/role',
   protect,
