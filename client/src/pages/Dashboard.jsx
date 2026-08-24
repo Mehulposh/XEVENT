@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { eventService } from '../services/apiService';
 import { registrationService } from '../services/apiService';
 import { useAuth } from '../context/authContext';
 
