@@ -2,11 +2,36 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
 const rateLimit = require('express-rate-limit');
 const passport = require('./config/passport');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
+
+// express-mongo-sanitize v2 tries to reassign req.query (req.query = ...),
+// which throws in Express 5 because req.query is a getter-only property
+// there ("Cannot set property query of #<IncomingMessage> which has only
+// a getter"). This local middleware does the same NoSQL-injection
+// sanitization, but mutates req.body/req.params/req.query in place instead
+// of reassigning them, so it works under Express 5.
+const sanitizeInPlace = (obj) => {
+  if (obj && typeof obj === 'object') {
+    for (const key of Object.keys(obj)) {
+      if (key.startsWith('$') || key.includes('.')) {
+        delete obj[key];
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        sanitizeInPlace(obj[key]);
+      }
+    }
+  }
+  return obj;
+};
+
+const mongoSanitize = () => (req, res, next) => {
+  if (req.body) sanitizeInPlace(req.body);
+  if (req.params) sanitizeInPlace(req.params);
+  if (req.query) sanitizeInPlace(req.query);
+  next();
+};
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
