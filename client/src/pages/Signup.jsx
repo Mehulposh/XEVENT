@@ -3,38 +3,75 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 
 const Signup = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: ''
+  });
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
+
   const { register } = useAuth();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setError('');
     setLoading(true);
+
     try {
-      await register({ ...formData, role: 'Participant' });
-      navigate('/explore');
+      await register({
+        ...formData,
+        role: 'Participant'
+      });
+
+      navigate('/events');
+
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
+      setError(
+        err.response?.data?.message ||
+        'Registration failed'
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center p-10">
-      <div className="w-full max-w-md bg-card-bg rounded-lg p-10 shadow-xl">
-        <h2 className="text-primary-yellow text-4xl font-bold text-center mb-8">Signup</h2>
-        
-        {error && <div className="bg-red-600 text-white p-3 rounded mb-5 text-center">{error}</div>}
+  const handleGoogleSignup = () => {
+    window.location.href =
+      'http://localhost:5000/api/auth/google';
+  };
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+  return (
+    <main className="auth-page">
+
+      <section className="auth-card">
+
+        <h1 className="auth-title">
+          Signup
+        </h1>
+
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
+
+        <form
+          onSubmit={handleSubmit}
+          className="auth-form"
+        >
+
           <input
             type="text"
             name="name"
@@ -42,7 +79,7 @@ const Signup = () => {
             value={formData.name}
             onChange={handleChange}
             required
-            className="w-full p-4 bg-input-bg border-2 border-primary-yellow rounded text-white placeholder-primary-yellow placeholder-opacity-80 focus:outline-none focus:border-yellow-300"
+            className="form-input"
           />
 
           <input
@@ -52,7 +89,7 @@ const Signup = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full p-4 bg-input-bg border-2 border-primary-yellow rounded text-white placeholder-primary-yellow placeholder-opacity-80 focus:outline-none focus:border-yellow-300"
+            className="form-input"
           />
 
           <input
@@ -63,12 +100,12 @@ const Signup = () => {
             onChange={handleChange}
             required
             minLength="8"
-            className="w-full p-4 bg-input-bg border-2 border-primary-yellow rounded text-white placeholder-primary-yellow placeholder-opacity-80 focus:outline-none focus:border-yellow-300"
+            className="form-input"
           />
 
           <button
             type="button"
-            className="w-full bg-input-bg text-white p-4 rounded font-semibold hover:bg-opacity-80 transition"
+            className="avatar-button"
           >
             Choose Avatar
           </button>
@@ -76,25 +113,41 @@ const Signup = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary-yellow text-gray-900 p-4 rounded font-bold text-lg hover:bg-yellow-300 transition disabled:opacity-60"
+            className="primary-button"
           >
             {loading ? 'Signing up...' : 'Signup'}
           </button>
 
           <button
             type="button"
-            onClick={() => window.location.href = 'http://localhost:5000/api/auth/google'}
-            className="w-full bg-red-600 text-white p-4 rounded font-semibold flex items-center justify-center gap-2 hover:bg-red-700 transition"
+            onClick={handleGoogleSignup}
+            className="google-button"
           >
-            <span className="text-xl font-bold">G</span> Signup with Google
+            <span className="google-icon">
+              G
+            </span>
+
+            Signup with Google
           </button>
+
         </form>
 
-        <p className="text-center mt-5 text-gray-400">
-          Already have an account? <Link to="/login" className="text-primary-yellow hover:underline font-semibold">Log in</Link>
+        <p className="auth-footer">
+
+          Already have an account?{' '}
+
+          <Link
+            to="/login"
+            className="auth-link"
+          >
+            Log in
+          </Link>
+
         </p>
-      </div>
-    </div>
+
+      </section>
+
+    </main>
   );
 };
 
