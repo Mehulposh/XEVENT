@@ -1,6 +1,32 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary-yellow: #ffc400;
+  --color-primary-bg: #292929;
+  --color-secondary-bg: #1f1f1f;
+  --color-card-bg: #202020;
+  --color-input-bg: #202b3d;
+  --color-border-color: #d4a900;
+}
 
+:root {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: #ffffff;
+  background: #292929;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 * {
   margin: 0;
@@ -8,12 +34,313 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+html {
+  background: #292929;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #2c3e50;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #292929;
   color: #ffffff;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: rgba(255, 196, 0, 0.3);
+}
+
+/* -------------------------------- */
+/* Global App Layout                */
+/* -------------------------------- */
+
+.app-shell {
+  min-height: 100vh;
+  background: #292929;
+}
+
+.page-container {
+  width: min(1400px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+/* -------------------------------- */
+/* Authentication Pages             */
+/* -------------------------------- */
+
+.auth-page {
+  min-height: calc(100vh - 70px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 56px 24px;
+}
+
+.auth-card {
+  width: min(530px, 100%);
+
+  background: #1f1f1f;
+
+  border-radius: 14px;
+
+  padding: 36px 28px 30px;
+
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.24);
+}
+
+.auth-title {
+  color: #ffc400;
+
+  text-align: center;
+
+  font-size: clamp(2rem, 4vw, 2.35rem);
+
+  line-height: 1.1;
+
+  font-weight: 800;
+
+  margin-bottom: 28px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+/* -------------------------------- */
+/* Inputs                           */
+/* -------------------------------- */
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+
+  border: 2px solid #c89f00;
+
+  border-radius: 5px;
+
+  background: #202b3d;
+
+  color: #ffffff;
+
+  padding: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #ffc400;
+
+  opacity: 0.92;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: #ffc400;
+
+  box-shadow:
+    0 0 0 3px rgba(255, 196, 0, 0.12);
+}
+
+/* -------------------------------- */
+/* Primary Button                   */
+/* -------------------------------- */
+
+.primary-button {
+  width: 100%;
+
+  border: 0;
+
+  border-radius: 6px;
+
+  background: #ffc400;
+
+  color: #171717;
+
+  padding: 14px 18px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+.primary-button:hover {
+  background: #ffd43b;
+
+  transform: translateY(-1px);
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+/* -------------------------------- */
+/* Google Button                    */
+/* -------------------------------- */
+
+.google-button {
+  width: 100%;
+
+  border: 0;
+
+  border-radius: 6px;
+
+  background: #ef0711;
+
+  color: #ffffff;
+
+  padding: 14px 18px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  transition:
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.google-button:hover {
+  background: #d90710;
+
+  transform: translateY(-1px);
+}
+
+.google-icon {
+  font-size: 1.25rem;
+
+  font-weight: 900;
+}
+
+/* -------------------------------- */
+/* Auth Footer                      */
+/* -------------------------------- */
+
+.auth-footer {
+  margin-top: 26px;
+
+  text-align: center;
+
+  color: #bdbdbd;
+}
+
+.auth-link {
+  color: #ffc400;
+
+  font-weight: 700;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+/* -------------------------------- */
+/* Error                            */
+/* -------------------------------- */
+
+.error-message {
+  background: #b91c1c;
+
+  color: #ffffff;
+
+  border-radius: 6px;
+
+  padding: 11px 13px;
+
+  margin-bottom: 20px;
+
+  text-align: center;
+}
+
+/* -------------------------------- */
+/* Avatar Button                    */
+/* -------------------------------- */
+
+.avatar-button {
+  width: 100%;
+
+  border: 1px solid #3d3b59;
+
+  border-radius: 5px;
+
+  background: #2b2a46;
+
+  color: #ffffff;
+
+  padding: 14px;
+
+  cursor: pointer;
+}
+
+.avatar-button:hover {
+  background: #353454;
+}
+
+/* -------------------------------- */
+/* Responsive                       */
+/* -------------------------------- */
+
+@media (max-width: 700px) {
+  .page-container {
+    width: min(100% - 28px, 1400px);
+  }
+
+  .auth-page {
+    padding: 32px 14px;
+  }
+
+  .auth-card {
+    padding: 28px 20px 24px;
+  }
 }
