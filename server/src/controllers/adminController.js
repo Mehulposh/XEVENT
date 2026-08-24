@@ -244,6 +244,66 @@ exports.deleteUser = async (req, res, next) => {
   }
 };
 
+// @desc    Get all pending organizer requests
+// @route   GET /api/admin/organizer-requests
+// @access  Private (Admin)
+exports.getOrganizerRequests = async (req, res, next) => {
+  try {
+    const users = await User.find({
+      organizerRequestStatus: 'pending',
+    }).select('-password');
+
+    // Cypress expects response.body to be an array.
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Approve or reject a user's organizer request
+// @route   PUT /api/admin/users/:id/approve-organizer
+// @access  Private (Admin)
+exports.approveOrganizerRequest = async (req, res, next) => {
+  try {
+    const { approve, isApproved } = req.body;
+
+    const shouldApprove =
+      approve !== undefined
+        ? !!approve
+        : isApproved !== false;
+
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    if (shouldApprove) {
+      user.role = 'Organizer';
+      user.organizerRequestStatus = 'approved';
+    } else {
+      user.organizerRequestStatus = 'rejected';
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+
+      message: shouldApprove
+        ? 'User approved as Organizer'
+        : 'User rejected as Organizer',
+
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // @desc    Approve or reject event
 // @route   PATCH /api/admin/events/:id/approval
 // @access  Private (Admin)
