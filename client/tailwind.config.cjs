@@ -1,21 +1,22 @@
-
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
+    './src/**/*.{js,jsx,ts,tsx}',
   ],
+
   theme: {
     extend: {
       colors: {
-        'primary-yellow': '#FBC60',
-        // 'primary-bg': '#2A2B2',
-        "primary-bg": "#ff00ff",     
-        'secondary-bg': '#1E1E1',
-        'card-bg': '#2d3e50',
-        'input-bg': '##1E2838',
-        'border-color': '#4a5f7f',
+        'primary-yellow': '#ffc400',
+        'primary-bg': '#292929',
+        'secondary-bg': '#1f1f1f',
+        'card-bg': '#202020',
+        'input-bg': '#202b3d',
+        'border-color': '#d4a900',
       },
     },
   },
+
   plugins: [],
-}
+};
