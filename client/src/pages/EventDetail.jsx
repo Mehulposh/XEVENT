@@ -15,15 +15,16 @@ const EventDetail = () => {
   }, [id]);
 
   const fetchEvent = async () => {
-    try {
-      const data = await eventService.getById(id);
-      setEvent(data.data);
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const data = await eventService.getById(id);
+    console.log('Event returned:', data);
+    setEvent(data);
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleRegister = async () => {
     try {
