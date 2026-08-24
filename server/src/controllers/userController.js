@@ -86,17 +86,76 @@ exports.updateProfile = async (req, res, next) => {
     const { name, picture } = req.body;
 
     const fieldsToUpdate = {};
-    if (name) fieldsToUpdate.name = name;
-    if (picture) fieldsToUpdate.picture = picture;
 
-    const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
-      new: true,
-      runValidators: true,
-    }).select('-password');
+    if (name) {
+      fieldsToUpdate.name = name;
+    }
+
+    if (picture) {
+      fieldsToUpdate.picture = picture;
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      fieldsToUpdate,
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    // Cypress expects:
+    // response.body.name
+    // response.body.email
+    // etc.
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Request organizer role
+// @route   PUT /api/users/request-organizer
+// @access  Private
+exports.requestOrganizerRole = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    if (user.role === 'Organizer' || user.role === 'Admin') {
+      return res.status(400).json({
+        success: false,
+        message: 'User already has organizer or admin privileges',
+      });
+    }
+
+    if (user.organizerRequestStatus === 'pending') {
+      return res.status(400).json({
+        success: false,
+        message: 'Organizer request already pending',
+      });
+    }
+
+    user.organizerRequestStatus = 'pending';
+
+    await user.save();
 
     res.status(200).json({
       success: true,
-      message: 'Profile updated successfully',
+      message: 'Organizer request submitted successfully',
       data: user,
     });
   } catch (error) {
