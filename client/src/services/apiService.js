@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:5000/api';
 const api = axios.create({
   baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json',
+  'Content-Type': 'application/json',
   },
 });
 
@@ -22,22 +22,46 @@ api.interceptors.request.use(
 
 export const authService = {
   register: async (userData) => {
-    const response = await api.post('/auth/register', userData);
-    if (response.data.data.token) {
-      localStorage.setItem('token', response.data.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.data.user));
-    }
-    return response.data;
-  },
+  const response = await api.post(
+    '/auth/register',
+    userData
+  );
+
+  if (response.data.token) {
+    localStorage.setItem(
+      'token',
+      response.data.token
+    );
+
+    localStorage.setItem(
+      'user',
+      JSON.stringify(response.data.user)
+    );
+  }
+
+  return response.data;
+},
 
   login: async (credentials) => {
-    const response = await api.post('/auth/login', credentials);
-    if (response.data.data.token) {
-      localStorage.setItem('token', response.data.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.data.user));
-    }
-    return response.data;
-  },
+  const response = await api.post(
+    '/auth/login',
+    credentials
+  );
+
+  if (response.data.token) {
+    localStorage.setItem(
+      'token',
+      response.data.token
+    );
+
+    localStorage.setItem(
+      'user',
+      JSON.stringify(response.data.user)
+    );
+  }
+
+  return response.data;
+},
 
   logout: () => {
     localStorage.removeItem('token');
@@ -86,12 +110,12 @@ export const eventService = {
 
 export const registrationService = {
   register: async (eventId) => {
-    const response = await api.post(`/registration/events/${eventId}`);
+    const response = await api.post(`/registration/${eventId}`);
     return response.data;
   },
 
   cancel: async (eventId) => {
-    const response = await api.delete(`/registration/events/${eventId}`);
+    const response = await api.delete(`/registration/${eventId}`);
     return response.data;
   },
 
@@ -101,7 +125,16 @@ export const registrationService = {
   },
 
   getEventParticipants: async (eventId) => {
-    const response = await api.get(`/registration/events/${eventId}/participants`);
+    const response = await api.get(
+      `/registration/events/${eventId}/participants`
+    );
+    return response.data;
+  },
+
+  checkStatus: async (eventId) => {
+    const response = await api.get(
+      `/registration/events/${eventId}/status`
+    );
     return response.data;
   },
 };
