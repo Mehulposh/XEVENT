@@ -52,6 +52,7 @@ exports.register = async (req, res, next) => {
       token,
     });
   } catch (error) {
+    console.log(error)
     next(error);
   }
 };
@@ -70,7 +71,9 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    const user = await User.findOne({ email }).select('+password');
+     const user = await User
+      .findOne({ email })
+      .select('+password');
 
     if (!user) {
       return res.status(401).json({
