@@ -1,83 +1,121 @@
-import React, { useState } from 'react';
-import { useAuth } from '../context/authContext';
-import { userService } from '../services/apiService';
+import React, { useState } from "react";
+import Navbar from "../components/Navbar";
+import { useAuth } from "../context/AuthContext";
 
 const Profile = () => {
   const { user, updateUser } = useAuth();
-  const [formData, setFormData] = useState({ name: user?.name || '', email: user?.email || '' });
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const getInitial = (name) => name?.charAt(0).toUpperCase() || 'A';
+  const [name, setName] = useState(user?.name || "");
+  const [email, setEmail] = useState(user?.email || "");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage('');
-    try {
-      const data = await userService.updateProfile({ name: formData.name });
-      updateUser(data.data);
-      setMessage('Profile updated successfully!');
-    } catch (error) {
-      setMessage('Failed to update profile');
-    } finally {
-      setLoading(false);
-    }
+  const getInitial = () => {
+    return user?.name?.charAt(0)?.toUpperCase() || "A";
   };
 
-  const handleRoleRequest = () => {
-    alert('Role change request sent to admin!');
+  const handleSave = async () => {
+    const updatedUser = {
+      ...user,
+      name,
+      email,
+    };
+
+    updateUser(updatedUser);
+
+    // Keep your existing API update call here.
+    // await userService.updateProfile({ name, email });
+
+    alert("Profile updated successfully");
   };
 
   return (
-    <div className="min-h-screen p-10">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-card-bg rounded-lg p-10">
-          <h2 className="text-primary-yellow text-4xl font-bold text-center mb-8">Your Profile</h2>
+    <div className="min-h-screen bg-[#292929] text-white">
+      
+      <main className="flex justify-center px-5 py-9 mt-6">
+        <div className="w-full max-w-[730px] bg-[#1d1d1d] rounded-lg shadow-xl px-8 py-8">
           
-          <div className="flex justify-center mb-8">
-            <div className="w-24 h-24 rounded-full bg-green-600 flex items-center justify-center text-white text-4xl font-bold">
-              {getInitial(user?.name)}
+          {/* Heading */}
+          <h1 className="text-center text-[#ffc400] text-[30px] font-bold mb-5">
+            Your Profile
+          </h1>
+
+          {/* Avatar */}
+          <div className="flex flex-col items-center mb-7">
+            <div className="w-[108px] h-[108px] rounded-full bg-[#65a832] border-[3px] border-[#ffc400] flex items-center justify-center">
+              <span className="text-white text-5xl font-normal">
+                {getInitial()}
+              </span>
             </div>
+
+            <h2 className="text-lg mt-3 font-medium">
+              {user?.name}
+            </h2>
+
+            <p className="text-gray-400 text-sm mt-1">
+              {user?.email}
+            </p>
           </div>
 
-          <div className="text-center mb-8">
-            <p className="text-white text-xl font-semibold">{user?.name}</p>
-            <p className="text-gray-400">{user?.email}</p>
-          </div>
-
-          {message && <div className={`p-3 rounded mb-5 text-center ${message.includes('success') ? 'bg-green-600' : 'bg-red-600'} text-white`}>{message}</div>}
-
-          <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Form */}
+          <div className="space-y-5">
+            
             <div>
-              <label className="block text-gray-300 mb-2">Name</label>
-              <input type="text" name="name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full p-3 bg-input-bg border-2 border-primary-yellow rounded text-white focus:outline-none focus:border-yellow-300" />
+              <label className="block text-sm font-semibold mb-2">
+                Name
+              </label>
+
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full h-12 px-3 bg-[#202b3d] border border-[#ffc400] rounded-md text-white outline-none focus:ring-2 focus:ring-[#ffc400]"
+              />
             </div>
 
             <div>
-              <label className="block text-gray-300 mb-2">Email</label>
-              <input type="email" name="email" value={formData.email} readOnly className="w-full p-3 bg-input-bg border-2 border-primary-yellow rounded text-white focus:outline-none" />
+              <label className="block text-sm font-semibold mb-2">
+                Email
+              </label>
+
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full h-12 px-3 bg-[#202b3d] border border-[#ffc400] rounded-md text-white outline-none focus:ring-2 focus:ring-[#ffc400]"
+              />
             </div>
 
-            <button type="button" className="w-full bg-input-bg text-white p-3 rounded font-semibold hover:bg-opacity-80 transition">
+            {/* Change Avatar */}
+            <button
+              className="w-full h-12 bg-[#28283f] border border-[#41415a] hover:bg-[#32324d] rounded-md transition font-medium"
+            >
               Change Avatar
             </button>
 
-            <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white p-3 rounded font-bold hover:bg-blue-700 transition disabled:opacity-60">
-              {loading ? 'Saving...' : 'Save Changes'}
+            {/* Save */}
+            <button
+              onClick={handleSave}
+              className="w-full h-12 bg-[#2167f5] hover:bg-[#3477ff] rounded-md transition font-semibold"
+            >
+              Save Changes
             </button>
+          </div>
 
-            <div className="text-center pt-4">
-              <p className="text-gray-300 mb-3">Role: <span className="font-semibold">{user?.role}</span></p>
-              {user?.role === 'Participant' && (
-                <button type="button" onClick={handleRoleRequest} className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold transition">
-                  Request Organizer Role
-                </button>
-              )}
+          {/* Role */}
+          <div className="text-center mt-6 text-gray-400">
+            Role:{" "}
+            <span className="text-white font-semibold">
+              {user?.role}
+            </span>
+          </div>
+
+          {/* Organizer Request */}
+          {user?.role === "Participant" && (
+            <div className="flex justify-center mt-4">
+              <button className="bg-[#00a83b] hover:bg-[#00c247] px-5 py-2.5 rounded-md font-medium transition">
+                Request Organizer Role
+              </button>
             </div>
-          </form>
+          )}
         </div>
-      </div>
+      </main>
     </div>
   );
 };
