@@ -7,10 +7,17 @@ const ErrorResponse = require('../utils/errorResponse');
 // @access  Public
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password, role } = req.body;
+    const {
+      name,
+      email,
+      password,
+      role,
+      avatar,
+      picture,
+    } = req.body;
 
-    // Check if user exists
     const existingUser = await User.findOne({ email });
+
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -18,30 +25,31 @@ exports.register = async (req, res, next) => {
       });
     }
 
-    // Create user
     const user = await User.create({
       name,
       email,
       password,
       role: role || 'Participant',
+      picture: picture || avatar || '',
     });
 
-    // Generate token
     const token = generateToken(user._id);
 
+    // IMPORTANT:
+    // Cypress expects user and token at the top level.
     res.status(201).json({
       success: true,
       message: 'User registered successfully',
-      data: {
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          picture: user.picture,
-        },
-        token,
+
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        picture: user.picture,
       },
+
+      token,
     });
   } catch (error) {
     next(error);
@@ -55,7 +63,6 @@ exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    // Validate email and password
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -63,7 +70,6 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    // Check for user (include password for comparison)
     const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
@@ -73,15 +79,14 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    // Check if user registered via Google (no password)
     if (!user.password) {
       return res.status(400).json({
         success: false,
-        message: 'This account was created with Google. Please use Google Sign-In.',
+        message:
+          'This account was created with Google. Please use Google Sign-In.',
       });
     }
 
-    // Check if password matches
     const isMatch = await user.comparePassword(password);
 
     if (!isMatch) {
@@ -91,22 +96,24 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    // Generate token
     const token = generateToken(user._id);
 
+    // IMPORTANT:
+    // Cypress expects response.body.user
+    // and response.body.token
     res.status(200).json({
       success: true,
       message: 'Login successful',
-      data: {
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          picture: user.picture,
-        },
-        token,
+
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        picture: user.picture,
       },
+
+      token,
     });
   } catch (error) {
     next(error);
