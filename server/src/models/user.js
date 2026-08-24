@@ -42,6 +42,12 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // Tracks a Participant's request to become an Organizer.
+    organizerRequestStatus: {
+      type: String,
+      enum: ['none', 'pending', 'approved', 'rejected'],
+      default: 'none',
+    },
     registeredEvents: [
       {
         event: {
