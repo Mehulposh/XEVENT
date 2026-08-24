@@ -1,117 +1,139 @@
-import React, { useState, useEffect } from 'react';
-import { userService } from '../services/apiService';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { userService } from "../services/apiService";
 
 const Admin = () => {
   const [users, setUsers] = useState([]);
-  const [showRequests, setShowRequests] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
 
   const fetchUsers = async () => {
     try {
       const data = await userService.getAll();
       setUsers(data.data || []);
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      console.error("Failed to fetch users:", err);
     }
   };
 
-  const handleApprove = async (userId) => {
-    try {
-      await userService.updateRole(userId, 'Organizer');
-      alert('User approved as Organizer!');
-      fetchUsers();
-    } catch (error) {
-      alert('Failed to approve user');
-    }
-  };
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+  
+  return (
+    <div className="min-h-screen bg-[#292929] text-white">
+      <main className="max-w-[1200px] mx-auto px-5 py-10">
 
-  const handleReject = async (userId) => {
-    alert('Request rejected');
-  };
+        {/* Organizer Requests Button */}
+        <div className="flex justify-center mb-8">
+          <Link
+            to="/admin/organizer-requests"
+            className="
+              bg-[#d99000]
+              hover:bg-[#f0a900]
+              text-white
+              font-medium
+              px-5
+              py-2
+              rounded-md
+              transition-all
+              duration-200
+            "
+          >
+            View Organizer Requests
+          </Link>
+        </div>
 
-  const organizerRequests = users.filter(u => u.role === 'Participant');
+        {/* Page Title */}
+        <h1 className="text-2xl font-medium mb-3">
+          All Users
+        </h1>
 
-  if (showRequests) {
-    return (
-      <div className="min-h-screen p-10">
-        <div className="max-w-4xl mx-auto">
-          <button onClick={() => setShowRequests(false)} type="button" className="mb-5 bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded">
-            ← Back
-          </button>
-          <h1 className="text-primary-yellow text-4xl font-bold mb-8">Organizer Requests</h1>
-          {organizerRequests.length === 0 ? (
-            <p className="text-gray-400">No pending requests</p>
-          ) : (
-            <div className="space-y-4">
-              {organizerRequests.slice(0, 2).map((user) => (
-                <div key={user._id} className="bg-card-bg p-5 rounded-lg flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-yellow-600 flex items-center justify-center text-white text-xl font-bold">
-                      {user.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                      <p className="text-white font-semibold">{user.name}</p>
-                      <p className="text-gray-400 text-sm">{user.email}</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button onClick={() => handleApprove(user._id)} type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">Approve</button>
-                    <button onClick={() => handleReject(user._id)} type="button" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded font-semibold">Reject</button>
-                  </div>
+        {/* Users Table */}
+        <div className="w-full overflow-hidden rounded-xl bg-[#1d1d1d]">
+
+          {/* Table Header */}
+          <div
+            className="
+              grid
+              grid-cols-[2fr_3fr_1fr_100px]
+              border-b
+              border-[#ffc400]
+              text-[#ffc400]
+              font-semibold
+            "
+          >
+            <div className="px-1 py-2">
+              Name
+            </div>
+
+            <div className="px-1 py-2">
+              Email
+            </div>
+
+            <div className="px-1 py-2">
+              Role
+            </div>
+
+            <div className="px-1 py-2">
+              Actions
+            </div>
+          </div>
+
+          {/* Users */}
+          {users.length > 0 ? (
+            users.map((user) => (
+              <div
+                key={user._id}
+                className="
+                  grid
+                  grid-cols-[2fr_3fr_1fr_100px]
+                  border-b
+                  border-[#9b8500]
+                  hover:bg-[#252525]
+                  transition-colors
+                "
+              >
+                {/* Name */}
+                <div className="px-1 py-2">
+                  {user.name}
                 </div>
-              ))}
+
+                {/* Email */}
+                <div className="px-1 py-2 text-gray-300">
+                  {user.email}
+                </div>
+
+                {/* Role */}
+                <div className="px-1 py-2">
+                  {user.role}
+                </div>
+
+                {/* Action */}
+                <div className="px-1 py-2">
+                  <Link
+                    to={`/admin/users/${user._id}`}
+                    className="
+                      inline-block
+                      bg-[#1769ff]
+                      hover:bg-[#367eff]
+                      text-white
+                      px-2
+                      py-1
+                      rounded-sm
+                      transition-colors
+                    "
+                  >
+                    Edit
+                  </Link>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="px-5 py-8 text-center text-gray-400">
+              No users found.
             </div>
           )}
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen p-10">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-center gap-8 mb-10">
-          <button onClick={() => setShowRequests(true)} type="button" className="bg-yellow-600 hover:bg-yellow-700 text-white px-8 py-3 rounded font-bold text-lg">
-            View Organizer Requests
-          </button>
-        </div>
-
-        <h2 className="text-white text-2xl font-semibold mb-6">All Users</h2>
-        {loading ? (
-          <div className="flex justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-yellow"></div></div>
-        ) : (
-          <div className="bg-card-bg rounded-lg overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-secondary-bg">
-                <tr>
-                  <th className="p-4 text-left text-primary-yellow">Name</th>
-                  <th className="p-4 text-left text-primary-yellow">Email</th>
-                  <th className="p-4 text-left text-primary-yellow">Role</th>
-                  <th className="p-4 text-left text-primary-yellow">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user._id} className="border-t border-border-color">
-                    <td className="p-4 text-white">{user.name}</td>
-                    <td className="p-4 text-gray-400">{user.email}</td>
-                    <td className="p-4 text-white">{user.role}</td>
-                    <td className="p-4">
-                      <button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded text-sm">Edit</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+      </main>
     </div>
   );
 };
