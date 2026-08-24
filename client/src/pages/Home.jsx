@@ -5,23 +5,51 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center p-10">
-      <div className="max-w-4xl w-full border-2 border-border-color rounded-lg p-20 text-center bg-card-bg">
-        <h1 className="text-5xl font-bold mb-8">
-          Welcome to <span className="text-primary-yellow">The Social Hub</span>
-        </h1>
-        <p className="text-lg text-gray-300 mb-10 max-w-2xl mx-auto">
-          Your one-stop hub for <strong>exciting events</strong> — meet, explore, and experience like never before!
-        </p>
-        <button
-          onClick={() => navigate('/explore')}
-          type="button"
-          className="bg-primary-yellow text-gray-900 px-8 py-4 rounded font-bold text-lg hover:bg-yellow-300 transition transform hover:-translate-y-1"
-        >
-          Explore Events
-        </button>
+    <main className="min-h-[calc(100vh-70px)] px-6 py-12">
+
+      <div className="mx-auto flex min-h-[calc(100vh-166px)] max-w-[875px] items-center justify-center">
+
+        <section className="w-full rounded-[2px] bg-[#292929] px-8 py-20 text-center sm:px-14">
+
+          <h1 className="text-[34px] font-extrabold leading-tight sm:text-[38px]">
+            Welcome to{' '}
+
+            <span className="text-primary-yellow">
+              The Social Hub
+            </span>
+          </h1>
+
+          <p className="mx-auto mt-4 max-w-[620px] text-[15px] leading-5 text-white/90 sm:text-[16px]">
+            Your one-stop hub for{' '}
+            <strong>exciting events</strong>{' '}
+            — meet, explore, and experience like never before!
+          </p>
+
+          <button
+            type="button"
+            onClick={() => navigate('/events')}
+            className="
+              mt-5
+              rounded-md
+              bg-primary-yellow
+              px-5
+              py-2
+              text-[11px]
+              font-bold
+              text-[#171717]
+              transition
+              hover:-translate-y-0.5
+              hover:bg-[#ffd43b]
+            "
+          >
+            Explore Events
+          </button>
+
+        </section>
+
       </div>
-    </div>
+
+    </main>
   );
 };
 
