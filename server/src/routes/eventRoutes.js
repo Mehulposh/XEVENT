@@ -18,17 +18,64 @@ const validate = require('../middleware/validationMiddleware');
 
 // Validation rules
 const eventValidation = [
-  body('title').trim().notEmpty().withMessage('Title is required'),
-  body('description').trim().notEmpty().withMessage('Description is required'),
-  body('date').isISO8601().withMessage('Valid date is required'),
-  body('time').notEmpty().withMessage('Time is required'),
-  body('location').trim().notEmpty().withMessage('Location is required'),
+  body('title')
+    .trim()
+    .notEmpty()
+    .withMessage('Title is required'),
+
+  body('description')
+    .trim()
+    .notEmpty()
+    .withMessage('Description is required'),
+
+  body('date')
+    .optional()
+    .isISO8601()
+    .withMessage('Valid date is required'),
+
+  body('startDate')
+    .optional()
+    .isISO8601()
+    .withMessage('Valid start date is required'),
+
+  body('time')
+    .optional()
+    .notEmpty()
+    .withMessage('Time is required'),
+
+  body('startTime')
+    .optional()
+    .notEmpty()
+    .withMessage('Start time is required'),
+
+  body('location')
+    .trim()
+    .notEmpty()
+    .withMessage('Location is required'),
+
   body('eventType')
-    .isIn(['online', 'offline'])
-    .withMessage('Event type must be either online or offline'),
+    .isIn([
+      'online',
+      'offline',
+      'Online',
+      'Offline',
+    ])
+    .withMessage(
+      'Event type must be either online or offline'
+    ),
+
   body('category')
     .optional()
-    .isIn(['conference', 'webinar', 'meetup', 'workshop', 'seminar', 'other'])
+    .isIn([
+      'conference',
+      'webinar',
+      'meetup',
+      'workshop',
+      'seminar',
+      'other',
+      'Test',
+      'test',
+    ])
     .withMessage('Invalid category'),
 ];
 
