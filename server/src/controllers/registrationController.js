@@ -95,19 +95,9 @@ exports.registerForEvent = async (req, res, next) => {
       // Don't fail the registration if email fails
     }
 
-    res.status(200).json({
-      success: true,
-      message: 'Successfully registered for the event',
-      data: {
-        event: {
-          id: event._id,
-          title: event.title,
-          date: event.date,
-          time: event.time,
-          location: event.location,
-        },
-      },
-    });
+    res.status(201).json({
+        message: 'Registered successfully',
+      });
   } catch (error) {
     next(error);
   }
@@ -171,9 +161,7 @@ exports.cancelRegistration = async (req, res, next) => {
     }
 
     res.status(200).json({
-      success: true,
-      message: 'Registration cancelled successfully',
-      data: {},
+      message: 'Registration cancelled',
     });
   } catch (error) {
     next(error);
